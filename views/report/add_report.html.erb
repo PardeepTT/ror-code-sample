@@ -1,0 +1,106 @@
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <!-- <h6 class="h2 text-white d-inline-block mb-0">Attendance</h6> -->
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <%= link_to("/") do %>
+                  <i class="fas fa-home"></i>
+                <% end %>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Weekly Report</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid dsr-detail-pg mt--6">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-body">
+          <div class="canvas-wrapper">
+            <div class="table-responsive">
+              <div data-controller="report" class="table input-lists">
+                <%= form_for @weekly_report, as: :weekly_report, url: { controller: request[:controller], action: :create_report }, local: true, method: :post do |f| %>
+                  <template data-report-target='new_project_task'>
+                    <%= f.fields_for :report_details, child_index: 'NEW_PROJECT_REPORT' do |report_detail| %>
+                      <%= render partial: 'report/report_detail_fields', locals: { report_detail: report_detail, f: f, is_new: false, assigned_projects: @assigned_projects } %>
+                    <% end %>
+                  </template>
+
+                  <%= f.fields_for :report_details do |report_detail| %>
+                    <%= render partial: 'report/report_detail_fields', locals: { report_detail: report_detail, f: f, is_new: true, add_sub: true, id: 1, assigned_projects: @assigned_projects } %>
+                  <% end %>
+
+                  <small data-report-target="add_item"></small>
+
+                  <br/>
+                  <div id="send_to">
+                   <label><b>Send To:</b></label> &nbsp
+                    <% User.manager.or(User.super_admin).each do |user| %>
+                      <% next if current_user.id == user.id %>
+                      <%= f.check_box :to_ids, { multiple: true, checked: user.super_admin?, disabled: !!user.super_admin? }, user.id %>
+                      <%= user.full_name %>
+                    <% end %>
+                  </div>
+                  <br/>
+                  <div class="button-group ">
+                    <label><b>Add Cc:</b></label> &nbsp
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                      <span>Add Cc</span>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu user_lists ccbox">
+                      <div class="panel-body">
+                        <div class="table-responsive">
+                          <div class="ccbox-list">
+                            <table class="table-condensed">
+                              <tbody>
+
+                              <tr>
+                                <td>
+                                  <input type="checkbox" name="add_cc[]" value="3"/>&nbsp; Amaltas Singh
+                                </td>
+
+                                <td>
+                                  <input type="checkbox" name="add_cc[]" value="4"/>&nbsp; Amit Kumar
+                                </td>
+
+                                <td>
+                                  <input type="checkbox" name="add_cc[]" value="10"/>&nbsp; Chandni Rana
+                                </td>
+
+                                <td>
+                                  <input type="checkbox" name="add_cc[]" value="12"/>&nbsp; Gaurav Verma
+                                </td>
+                              </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </ul>
+                  </div>
+                  <br/>
+
+                  <div class="subbtn">
+                    <%= f.submit "Submit Report", class: "btn btn-primary  pull-center" %>
+                  </div>
+
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

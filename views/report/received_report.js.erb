@@ -1,0 +1,2 @@
+$('#loader-body').fadeOut();
+$("#weekly-report-main-div").html("<%= j render(partial: "report/weekly_report", locals: { weekly_reports: @weekly_reports, pagy: @pagy,current_user: current_user, report: @report}) %>");

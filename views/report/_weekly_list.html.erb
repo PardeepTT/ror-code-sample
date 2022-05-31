@@ -1,0 +1,48 @@
+<div class="card-body">
+  <div class="canvas-wrapper dsr-details-list">
+    <div class="table-responsive">
+      <div>
+        <%= image_tag("small_loader.gif", class: "loaderList",style: "display: none; margin-left: 35%; margin-right: 30%; width: 10%;" ) %>
+      </div>
+      <table class="table ">
+        <tbody id="dsr_tbody">
+        <% weekly_reports.each do |report| %>
+        <% report_detail = report.report_details.first %>
+          <tr class="dsr-point"
+              id="report-<%= report.id %>"
+              data-action="click->report#<%= current_user.id == report.user_id ? "fetchSendReport" : "fetchReceivedReport" %>"
+              data-report-id-param="<%= report.id %>">
+
+          <% if current_user.id != report.user_id %>
+              <td width="20%">
+                <b><%= report.user.full_name %></b>
+              </td>
+              <td width="50%">
+                <b><%= report_detail&.project&.name || "N-A" %></b><br>
+                <%= report_detail&.description.to_s.truncate_bytes(50) %>...
+              </td>
+              <% else %>
+              <td width="70%">
+                <b><%= report_detail&.project&.name || "N-A" %></b><br>
+                <%= report_detail&.description.to_s.truncate_bytes(50) %>...
+              </td>
+              <% end %>
+            <td><%= report.date.strftime('%d-%m-%Y') || "-" %></td>
+          </tr>
+        <% end if weekly_reports.present? %>
+        <% unless weekly_reports.present? %>
+        <tr>
+          <td colspan="3" class="no_record">
+            <span><b>No records found</b></span>
+          </td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <span class="paginate-content">
+        <%= raw pagy_nav(pagy) if pagy.pages > 1 %>
+      </span>
+    </div>
+  </div>
+</div>
+

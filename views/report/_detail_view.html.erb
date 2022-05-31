@@ -1,0 +1,44 @@
+<div class="card">
+  <!-- Card header -->
+  <div class="card-header d-flex justify-content-between align-items-center border-0">
+    <h3 class="mb-0">Weekly Report Details</h3>
+  </div>
+  <div class="card-body">
+    <div class="canvas-wrapper dsr-details-content">
+      <% project_hash = {} %>
+      <% project_hash[""] = "N-A" %>
+      <% report.report_details.each do |report_detail| %>
+        <% project_id = report_detail.project_id.to_s %>
+        <% unless project_hash[project_id].present? %>
+          <% project_hash[project_id] = report_detail.project.name %>
+        <% end %>
+
+        <div>
+          <b>Project: <%= project_hash[project_id] %></b>
+        </div>
+        <div class="col-md-12">
+            <p style="text-align:justify;">
+              <%= report_detail.description.to_s.gsub("\n", "<br/>").html_safe %>
+            </p>
+        </div>
+      <% end if report.present? %>
+    </div>
+  </div>
+  <!-- Card footer -->
+  <div class="card-footer py-3 px-3">
+    <div class="row">
+      <div id="sent-details-data" class="col-sm-12" style="cursor: pointer" data-action="click->report#toggleDetail">
+        See Details
+        <div id="sent-details" style="display: none;" class="mt-2" data-report-target="send_detail">
+          <% if report.present? %>
+            <b>To: </b><%= User.where(id: report.to_ids).pluck(:email).join(", ") %>
+            <br>
+            <% if report.cc_ids.present? %>
+              <b>Cc: </b><%= User.where(id: report.cc_ids).pluck(:email).join(", ") %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

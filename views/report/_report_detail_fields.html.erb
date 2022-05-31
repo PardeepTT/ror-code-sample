@@ -1,0 +1,33 @@
+<table class="nested-weekly-fields">
+  <%= report_detail.hidden_field :_destroy %>
+  <tr>
+    <td colspan="3">
+      <%= report_detail.select("project_id", options_for_select((assigned_projects.collect { |u| [u.name, u.id] }).concat([["Other",0]])), {include_blank: "Select Project"}, { class: "form-control dsr select-project" , required: true}) %>
+    </td>
+
+    <td>
+      <% if is_new %>
+        <small>
+          <%= link_to("javascript:void(0)", class: "btn btn-primary btn-md btn-circle add-rows", data: { action: "click->report#add_association" }) do %>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          <% end %>
+        </small>
+      <% else %>
+        <small>
+          <%= link_to("javascript:void(0)", class: "btn btn-danger btn-md delRow btn-circle", data: { action: "click->report#remove_association" }) do %>
+            <i class="fa fa-times"></i>
+          <% end %>
+        </small>
+      <% end %>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan="3">
+      <%= report_detail.text_area :description, placeholder: "Description", class: "form-control dsr dsr-area", required: true %>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" colspan="3">&nbsp</td>
+  </tr>
+</table>
